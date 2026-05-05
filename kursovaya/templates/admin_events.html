@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% if lang == 'kk' %}Админ — Іс-шаралар{% elif lang == 'en' %}Admin — Events{% else %}Админ — Мероприятия{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="section container">
+      <article class="card db-card">
+        <div class="db-head">
+          <h2>{% if lang == 'kk' %}Іс-шараларды басқару{% elif lang == 'en' %}Manage events{% else %}Управление мероприятиями{% endif %}</h2>
+          <div class="db-actions">
+            <a class="btn btn-outline" href="{{ url_for('admin_registrations', lang=lang) }}">{% if lang == 'kk' %}Тіркеулер{% elif lang == 'en' %}Registrations{% else %}Регистрации{% endif %}</a>
+            <a class="btn btn-outline" href="{{ url_for('index', lang=lang) }}">{% if lang == 'kk' %}Сайтқа{% elif lang == 'en' %}To site{% else %}На сайт{% endif %}</a>
+            <a class="btn btn-primary" href="{{ url_for('admin_logout') }}">{% if lang == 'kk' %}Шығу{% elif lang == 'en' %}Logout{% else %}Выйти{% endif %}</a>
+          </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flashes">
+              {% for category, message in messages %}
+                <div class="flash {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="admin-events-list">
+          {% for event in events %}
+            <form class="admin-event-form" method="post" action="{{ url_for('admin_update_event', event_id=event.id) }}">
+              <div class="admin-event-top">
+                <h3>#{{ event.id }} — {{ event.title }}</h3>
+                <span class="event-count">{% if lang == 'kk' %}Тіркелу:{% elif lang == 'en' %}Registrations:{% else %}Регистраций:{% endif %} {{ event.registrations_count }}</span>
+              </div>
+              <div class="admin-grid">
+                <label>{% if lang == 'kk' %}Атауы{% elif lang == 'en' %}Title{% else %}Название{% endif %}
+                  <input type="text" name="title" value="{{ event.title }}" minlength="3" required />
+                </label>
+                <label>{% if lang == 'kk' %}Күні мен уақыты{% elif lang == 'en' %}Date and time{% else %}Дата и время{% endif %}
+                  <input type="datetime-local" name="event_datetime" value="{{ event.event_datetime }}" required />
+                </label>
+                <label>{% if lang == 'kk' %}Орын{% elif lang == 'en' %}Location{% else %}Локация{% endif %}
+                  <input type="text" name="location" value="{{ event.location }}" minlength="3" required />
+                </label>
+                <label>{% if lang == 'kk' %}Бағасы (KZT){% elif lang == 'en' %}Price (KZT){% else %}Цена (KZT){% endif %}
+                  <input type="number" name="price" min="0" value="{{ event.price }}" required />
+                </label>
+                <label>{% if lang == 'kk' %}Орын лимиті{% elif lang == 'en' %}Capacity{% else %}Лимит мест{% endif %}
+                  <input type="number" name="capacity" min="1" value="{{ event.capacity }}" required />
+                </label>
+                <label>{% if lang == 'kk' %}Дизайн{% elif lang == 'en' %}Design{% else %}Дизайн{% endif %}
+                  <select name="theme" required>
+                    <option value="theme-tech" {% if event.theme == 'theme-tech' %}selected{% endif %}>{% if lang == 'kk' %}Технологиялық{% elif lang == 'en' %}Tech{% else %}Технологичный{% endif %}</option>
+                    <option value="theme-business" {% if event.theme == 'theme-business' %}selected{% endif %}>{% if lang == 'kk' %}Бизнес{% elif lang == 'en' %}Business{% else %}Бизнес{% endif %}</option>
+                    <option value="theme-community" {% if event.theme == 'theme-community' %}selected{% endif %}>{% if lang == 'kk' %}Қауымдастық{% elif lang == 'en' %}Community{% else %}Сообщество{% endif %}</option>
+                    <option value="theme-creative" {% if event.theme == 'theme-creative' %}selected{% endif %}>{% if lang == 'kk' %}Шығармашылық{% elif lang == 'en' %}Creative{% else %}Креативный{% endif %}</option>
+                    <option value="theme-premium" {% if event.theme == 'theme-premium' %}selected{% endif %}>{% if lang == 'kk' %}Премиум{% elif lang == 'en' %}Premium{% else %}Премиум{% endif %}</option>
+                  </select>
+                </label>
+              </div>
+              <label>{% if lang == 'kk' %}Сипаттама{% elif lang == 'en' %}Description{% else %}Описание{% endif %}
+                <textarea name="description" rows="3" minlength="10" required>{{ event.description }}</textarea>
+              </label>
+              <div class="admin-form-actions">
+                <button class="btn btn-primary" type="submit">{% if lang == 'kk' %}Өзгерістерді сақтау{% elif lang == 'en' %}Save changes{% else %}Сохранить изменения{% endif %}</button>
+                <button class="btn btn-danger" type="submit" formaction="{{ url_for('admin_delete_event', event_id=event.id) }}" onclick="return confirm('{% if lang == 'kk' %}Іс-шараны және барлық тіркеулерді өшіру керек пе?{% elif lang == 'en' %}Delete event and all its registrations?{% else %}Удалить мероприятие и все его регистрации?{% endif %}')">{% if lang == 'kk' %}Өшіру{% elif lang == 'en' %}Delete{% else %}Удалить{% endif %}</button>
+              </div>
+            </form>
+          {% else %}
+            <p class="empty">{% if lang == 'kk' %}Іс-шаралар әлі жоқ.{% elif lang == 'en' %}No events yet.{% else %}Событий пока нет.{% endif %}</p>
+          {% endfor %}
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

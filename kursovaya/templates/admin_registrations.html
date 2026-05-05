@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% if lang == 'kk' %}Тіркеулер базасы{% elif lang == 'en' %}Registrations Database{% else %}База регистраций{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="section container">
+      <article class="card db-card">
+        <div class="db-head">
+          <h2>{% if lang == 'kk' %}Тіркелген қатысушылар тізімі{% elif lang == 'en' %}Registered Participants{% else %}Список зарегистрированных участников{% endif %}</h2>
+          <div class="db-actions">
+            <a class="btn btn-outline" href="{{ url_for('admin_events', lang=lang) }}">{% if lang == 'kk' %}Іс-шаралар{% elif lang == 'en' %}Events{% else %}Мероприятия{% endif %}</a>
+            <a class="btn btn-outline" href="{{ url_for('admin_export_registrations', lang=lang) }}">{% if lang == 'kk' %}CSV жүктеу{% elif lang == 'en' %}Export CSV{% else %}Экспорт CSV{% endif %}</a>
+            <a class="btn btn-outline" href="{{ url_for('index', lang=lang) }}">{% if lang == 'kk' %}Сайтқа{% elif lang == 'en' %}To site{% else %}На сайт{% endif %}</a>
+            <a class="btn btn-primary" href="{{ url_for('admin_logout') }}">{% if lang == 'kk' %}Шығу{% elif lang == 'en' %}Logout{% else %}Выйти{% endif %}</a>
+          </div>
+        </div>
+        <form class="admin-search" method="get" action="{{ url_for('admin_registrations', lang=lang) }}">
+          <input type="text" name="q" placeholder="{% if lang == 'kk' %}Аты, email, телефон, іс-шара бойынша іздеу{% elif lang == 'en' %}Search by name, email, phone, event{% else %}Поиск по имени, email, телефону, событию{% endif %}" value="{{ search }}" />
+          <button type="submit" class="btn btn-outline">{% if lang == 'kk' %}Іздеу{% elif lang == 'en' %}Search{% else %}Найти{% endif %}</button>
+        </form>
+        <div class="metric-row">
+          <div class="metric"><span>{% if lang == 'kk' %}Іс-шаралар{% elif lang == 'en' %}Events{% else %}Мероприятий{% endif %}</span><strong>{{ total_events }}</strong></div>
+          <div class="metric"><span>{% if lang == 'kk' %}Тіркелу{% elif lang == 'en' %}Registrations{% else %}Регистраций{% endif %}</span><strong>{{ total_regs }}</strong></div>
+          <div class="metric"><span>{% if lang == 'kk' %}Түсім{% elif lang == 'en' %}Revenue{% else %}Выручка{% endif %}</span><strong>{{ revenue }} KZT</strong></div>
+        </div>
+        <div class="db-table-wrap">
+          <table class="db-table">
+            <thead>
+              <tr>
+                <th>{% if lang == 'kk' %}Аты{% elif lang == 'en' %}Name{% else %}Имя{% endif %}</th>
+                <th>Email</th>
+                <th>{% if lang == 'kk' %}Телефон{% elif lang == 'en' %}Phone{% else %}Телефон{% endif %}</th>
+                <th>{% if lang == 'kk' %}Іс-шара{% elif lang == 'en' %}Event{% else %}Событие{% endif %}</th>
+                <th>{% if lang == 'kk' %}Іс-шара күні{% elif lang == 'en' %}Event date{% else %}Дата события{% endif %}</th>
+                <th>{% if lang == 'kk' %}Тариф{% elif lang == 'en' %}Plan{% else %}Тариф{% endif %}</th>
+                <th>{% if lang == 'kk' %}Тіркелу күні{% elif lang == 'en' %}Registration date{% else %}Дата регистрации{% endif %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if registrations %}
+                {% for row in registrations %}
+                  <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.email }}</td>
+                    <td>{{ row.phone }}</td>
+                    <td>{{ row.event_title }}</td>
+                    <td>{{ row.event_datetime.replace('T', ' ') }}</td>
+                    <td>{{ row.price }} KZT</td>
+                    <td>{{ row.created_at.replace('T', ' ') }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="7">{% if lang == 'kk' %}Тіркелу әлі жоқ.{% elif lang == 'en' %}No registrations yet.{% else %}Пока нет регистраций.{% endif %}</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

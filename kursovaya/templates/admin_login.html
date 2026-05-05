@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amirkhan — {% if lang == 'kk' %}Админге кіру{% elif lang == 'en' %}Admin Login{% else %}Вход администратора{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="section container admin-wrap">
+      <article class="card admin-card">
+        <h2>Amirkhan • {% if lang == 'kk' %}Админге кіру{% elif lang == 'en' %}Admin Login{% else %}Вход администратора{% endif %}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flashes">
+              {% for category, message in messages %}
+                <div class="flash {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <form method="post" class="create-form">
+          <input type="text" name="username" placeholder="{% if lang == 'kk' %}Логин{% elif lang == 'en' %}Username{% else %}Логин{% endif %}" required />
+          <input type="password" name="password" placeholder="{% if lang == 'kk' %}Құпия сөз{% elif lang == 'en' %}Password{% else %}Пароль{% endif %}" required />
+          <button type="submit" class="btn btn-primary">{% if lang == 'kk' %}Кіру{% elif lang == 'en' %}Sign in{% else %}Войти{% endif %}</button>
+        </form>
+        <p>{% if lang == 'kk' %}Әдепкі: логин <strong>admin</strong>, құпия сөз <strong>12345678</strong>.{% elif lang == 'en' %}Default: username <strong>admin</strong>, password <strong>12345678</strong>.{% else %}По умолчанию: логин <strong>admin</strong>, пароль <strong>12345678</strong>.{% endif %}</p>
+        <p><a href="{{ url_for('index', lang=lang) }}">{% if lang == 'kk' %}Сайтқа оралу{% elif lang == 'en' %}Back to site{% else %}Назад на сайт{% endif %}</a></p>
+      </article>
+    </main>
+  </body>
+</html>

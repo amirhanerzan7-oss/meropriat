@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amirkhan Event Platform - Демо версия</title>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --surface: #ffffff;
+            --surface-soft: #f1f5ff;
+            --text: #e2e8f0;
+            --muted: #9aa8c4;
+            --primary: #38bdf8;
+            --primary-2: #6366f1;
+            --accent: #a855f7;
+            --border: #243049;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            background-image:
+                radial-gradient(circle at 8% 12%, rgba(236, 72, 153, 0.28), transparent 28%),
+                radial-gradient(circle at 88% 8%, rgba(56, 189, 248, 0.24), transparent 32%),
+                radial-gradient(circle at 52% 92%, rgba(168, 85, 247, 0.28), transparent 30%);
+            background-attachment: fixed;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header {
+            background: rgba(8, 14, 30, 0.86);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #f8fafc;
+            text-decoration: none;
+        }
+        .demo-notice {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .event-card {
+            background: linear-gradient(180deg, #0f172a, #111827);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem;
+            transition: transform 0.2s ease;
+        }
+        .event-card:hover { transform: translateY(-4px); }
+        .event-cover {
+            height: 150px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .theme-tech { background: linear-gradient(135deg, #2563eb, #22d3ee); }
+        .theme-business { background: linear-gradient(135deg, #4f46e5, #a855f7); }
+        .theme-community { background: linear-gradient(135deg, #0ea5e9, #14b8a6); }
+        .theme-creative { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
+        .theme-premium { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+        
+        .event-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #f8fafc;
+        }
+        .event-meta {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .event-desc {
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-open {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-1px); }
+        
+        .footer {
+            background: rgba(8, 14, 30, 0.86);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0 10px;
+            }
+            .event-cover {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">🎯 Amirkhan Event Platform</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="demo-notice">
+            📱 ДЕМО ВЕРСИЯ - ОФЛАЙН ПРЕЗЕНТАЦИЯ
+            <br>Полная версия доступна онлайн после запуска сервера
+        </div>
+
+        <h1 style="text-align: center; margin: 2rem 0; color: var(--primary);">
+            🚀 Система управления мероприятиями
+        </h1>
+
+        <div class="events-grid">
+            <!-- Startup Meetup -->
+            <div class="event-card">
+                <div class="event-cover theme-tech">🚀 Startup Meetup</div>
+                <h3 class="event-title">Startup Meetup Almaty</h3>
+                <p class="event-meta">📅 08.05.2026 18:30 | 📍 Алматы, Smart Point | 💰 5000 KZT</p>
+                <p class="event-desc">Нетворкинг, питч-сессии и практические кейсы от локальных IT-команд.</p>
+                <span class="status status-open">✅ Открыто</span>
+            </div>
+
+            <!-- Frontend Day -->
+            <div class="event-card">
+                <div class="event-cover theme-business">💻 Frontend Day</div>
+                <h3 class="event-title">Frontend Day</h3>
+                <p class="event-meta">📅 15.05.2026 11:00 | 📍 Алматы, Tech Garden | 💰 7000 KZT</p>
+                <p class="event-desc">Интенсив по современному React, UX-паттернам и производительности интерфейсов.</p>
+                <span class="status status-open">✅ Открыто</span>
+            </div>
+
+            <!-- Business Strategy -->
+            <div class="event-card">
+                <div class="event-cover theme-premium">💼 Business Strategy</div>
+                <h3 class="event-title">Business Strategy Workshop</h3>
+                <p class="event-meta">📅 20.05.2026 14:00 | 📍 Алматы, Astana Hub | 💰 12000 KZT</p>
+                <p class="event-desc">Мастер-класс по разработке бизнес-стратегий и масштабированию компании.</p>
+                <span class="status status-open">✅ Открыто</span>
+            </div>
+
+            <!-- Community Hackathon -->
+            <div class="event-card">
+                <div class="event-cover theme-community">🏆 Community Hackathon</div>
+                <h3 class="event-title">Community Hackathon</h3>
+                <p class="event-meta">📅 25.05.2026 09:00 | 📍 Алматы, Digital Khan | 💰 3000 KZT</p>
+                <p class="event-desc">48-часовой хакатон для решения социальных проблем города.</p>
+                <span class="status status-open">✅ Открыто</span>
+            </div>
+
+            <!-- Creative Design -->
+            <div class="event-card">
+                <div class="event-cover theme-creative">🎨 Creative Design</div>
+                <h3 class="event-title">Creative Design Summit</h3>
+                <p class="event-meta">📅 01.06.2026 10:30 | 📍 Алматы, Art Space | 💰 8500 KZT</p>
+                <p class="event-desc">Саммит дизайнеров с мастер-классами по UI/UX и графическому дизайну.</p>
+                <span class="status status-open">✅ Открыто</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 3rem 0;">
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">🎯 Функционал системы:</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid var(--primary);">
+                    <h3 style="color: var(--primary); margin-bottom: 0.5rem;">📝 Создание мероприятий</h3>
+                    <p>С выбором дизайна, дат, цен и лимита мест</p>
+                </div>
+                <div style="background: rgba(34, 197, 94, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid #22c55e;">
+                    <h3 style="color: #22c55e; margin-bottom: 0.5rem;">👥 Регистрация</h3>
+                    <p>Пользователи могут регистрироваться на мероприятия</p>
+                </div>
+                <div style="background: rgba(168, 85, 247, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid var(--accent);">
+                    <h3 style="color: var(--accent); margin-bottom: 0.5rem;">🎨 5 тем дизайна</h3>
+                    <p>Технологичный, Бизнес, Сообщество, Креативный, Премиум</p>
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid #ef4444;">
+                    <h3 style="color: #ef4444; margin-bottom: 0.5rem;">⚙️ Админ-панель</h3>
+                    <p>Управление мероприятиями и регистрациями</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 3rem 0;">
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">📱 Мобильная версия:</h2>
+            <p style="color: var(--muted); margin-bottom: 2rem;">Сайт полностью адаптирован для мобильных устройств</p>
+            <div style="background: rgba(8, 14, 30, 0.6); padding: 1rem; border-radius: 12px; max-width: 400px; margin: 0 auto;">
+                <p>📱 <strong>Мобильное меню</strong> - кнопка "☰"</p>
+                <p>🎯 <strong>Адаптивные карточки</strong> - оптимизированы для телефонов</p>
+                <p>🌐 <strong>3 языка</strong> - RU, KZ, EN</p>
+                <p>✨ <strong>Анимации</strong> - плавные переходы и эффекты</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><strong>🎯 Amirkhan Event Platform</strong></p>
+            <p>Система управления мероприятиями разработана студентом колледжа AKSIT</p>
+            <p style="color: var(--muted); margin-top: 1rem;">
+                📞 WhatsApp: <a href="https://wa.me/87754631285" style="color: var(--primary);">+7 775 463 1285</a><br>
+                📧 Email: amirkhan.events@local
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

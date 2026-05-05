@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Amirkhan event management platform" />
+    <title>Amirkhan — {% if lang == 'kk' %}Іс-шараларды басқару жүйесі{% elif lang == 'en' %}Event Management System{% else %}Система управления мероприятиями{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container navbar">
+        <a href="#hero" class="logo">Amirkhan</a>
+        <button class="menu-btn" id="menu-btn" type="button" aria-label="Открыть меню">☰</button>
+        <nav class="nav" id="main-nav">
+          <a href="#hero">{% if lang == 'kk' %}Басты бет{% elif lang == 'en' %}Home{% else %}Главная{% endif %}</a>
+          <a href="#events">{% if lang == 'kk' %}Іс-шаралар{% elif lang == 'en' %}Events{% else %}Мероприятия{% endif %}</a>
+          <a href="#pricing">{% if lang == 'kk' %}Тарифтер{% elif lang == 'en' %}Pricing{% else %}Тарифы{% endif %}</a>
+          <a href="#services">{% if lang == 'kk' %}Сервистер{% elif lang == 'en' %}Services{% else %}Сервисы{% endif %}</a>
+          <a href="#create">{% if lang == 'kk' %}Құру{% elif lang == 'en' %}Create{% else %}Создать{% endif %}</a>
+          <a href="#contacts">{% if lang == 'kk' %}Байланыс{% elif lang == 'en' %}Contacts{% else %}Контакты{% endif %}</a>
+          <a href="{{ url_for('admin_login', lang=lang) }}">{% if lang == 'kk' %}Админ{% elif lang == 'en' %}Admin{% else %}Админ{% endif %}</a>
+        </nav>
+        <div class="lang-switch">
+          <a href="{{ url_for('index', lang='ru') }}" class="{% if lang == 'ru' %}active{% endif %}">RU</a>
+          <a href="{{ url_for('index', lang='kk') }}" class="{% if lang == 'kk' %}active{% endif %}">KZ</a>
+          <a href="{{ url_for('index', lang='en') }}" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-bg" aria-hidden="true">
+          <div class="live-track"></div>
+          <div class="person p1"></div>
+          <div class="person p2"></div>
+          <div class="person p3"></div>
+          <div class="person p4"></div>
+        </div>
+        <div class="container hero-inner reveal">
+          <p class="badge">{% if lang == 'kk' %}Ивент-ұйымдастырушыларға арналған платформа{% elif lang == 'en' %}Platform for event organizers{% else %}Платформа для ивент-организаторов{% endif %}</p>
+          <h1>{% if lang == 'kk' %}Іс-шараларды басқару жүйесі{% elif lang == 'en' %}Event Management System{% else %}Система управления мероприятиями{% endif %}</h1>
+          <p class="subtitle">
+            {% if lang == 'kk' %}Іс-шара құру, тіркеулерді, бағаларды және клиенттік сервисті басқаруға арналған заманауи платформа.{% elif lang == 'en' %}A modern service to create events, manage registrations, pricing, and client services.{% else %}Живой сервис для создания событий, управления регистрациями, ценами и клиентским сервисом.{% endif %}
+          </p>
+          <p class="credit">{% if lang == 'kk' %}AKSIT колледжінің студенті әзірледі — <strong>Амирхан</strong>{% elif lang == 'en' %}Developed by AKSIT college student — <strong>Amirkhan</strong>{% else %}Разработано студентом колледжа AKSIT — <strong>Амирхан</strong>{% endif %}</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#create">{% if lang == 'kk' %}Іс-шара құру{% elif lang == 'en' %}Create Event{% else %}Создать мероприятие{% endif %}</a>
+            <a class="btn btn-outline" href="#events">{% if lang == 'kk' %}Тіркелу{% elif lang == 'en' %}Register{% else %}Зарегистрироваться{% endif %}</a>
+          </div>
+          <div class="hero-stats">
+            <div><span>{{ events|length }}</span> {% if lang == 'kk' %}іс-шара{% elif lang == 'en' %}events{% else %}мероприятий{% endif %}</div>
+            <div><span>{{ total_regs }}</span> {% if lang == 'kk' %}тіркелу{% elif lang == 'en' %}registrations{% else %}регистраций{% endif %}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container flashes">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </section>
+
+      <section class="section container reveal" id="events">
+        <div class="section-head">
+          <h2>{% if lang == 'kk' %}Іс-шаралар тізімі{% elif lang == 'en' %}Events List{% else %}Список мероприятий{% endif %}</h2>
+          <p>{% if lang == 'kk' %}Іс-шара басталғаннан кейін немесе орын қалмаса, тіркелу автоматты түрде жабылады.{% elif lang == 'en' %}Registration closes automatically after event start or when capacity is full.{% else %}Регистрация автоматически закрывается после начала мероприятия или при отсутствии мест.{% endif %}</p>
+        </div>
+        <form class="filter-bar" method="get" action="{{ url_for('index') }}">
+          <input type="hidden" name="lang" value="{{ lang }}" />
+          <input type="text" name="q" placeholder="{% if lang == 'kk' %}Атауы немесе сипаттамасы бойынша іздеу{% elif lang == 'en' %}Search by title or description{% else %}Поиск по названию или описанию{% endif %}" value="{{ filters.q }}" />
+          <select name="location">
+            <option value="">{% if lang == 'kk' %}Барлық орындар{% elif lang == 'en' %}All locations{% else %}Все локации{% endif %}</option>
+            {% for city in locations %}
+              <option value="{{ city }}" {% if filters.location == city %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+          </select>
+          <select name="availability">
+            <option value="all" {% if filters.availability == 'all' %}selected{% endif %}>{% if lang == 'kk' %}Барлығы{% elif lang == 'en' %}All{% else %}Все{% endif %}</option>
+            <option value="open" {% if filters.availability == 'open' %}selected{% endif %}>{% if lang == 'kk' %}Тек ашық{% elif lang == 'en' %}Open only{% else %}Только открытые{% endif %}</option>
+            <option value="closed" {% if filters.availability == 'closed' %}selected{% endif %}>{% if lang == 'kk' %}Тек жабық{% elif lang == 'en' %}Closed only{% else %}Только закрытые{% endif %}</option>
+          </select>
+          <select name="sort">
+            <option value="soon" {% if filters.sort == 'soon' %}selected{% endif %}>{% if lang == 'kk' %}Алдымен жақын күн{% elif lang == 'en' %}Nearest first{% else %}Сначала ближайшие{% endif %}</option>
+            <option value="late" {% if filters.sort == 'late' %}selected{% endif %}>{% if lang == 'kk' %}Алдымен кеш күн{% elif lang == 'en' %}Latest first{% else %}Сначала поздние{% endif %}</option>
+            <option value="price_low" {% if filters.sort == 'price_low' %}selected{% endif %}>{% if lang == 'kk' %}Баға: өсуі{% elif lang == 'en' %}Price: low to high{% else %}Цена: по возрастанию{% endif %}</option>
+            <option value="price_high" {% if filters.sort == 'price_high' %}selected{% endif %}>{% if lang == 'kk' %}Баға: кемуі{% elif lang == 'en' %}Price: high to low{% else %}Цена: по убыванию{% endif %}</option>
+          </select>
+          <button type="submit" class="btn btn-outline">{% if lang == 'kk' %}Қолдану{% elif lang == 'en' %}Apply{% else %}Применить{% endif %}</button>
+        </form>
+        <div class="events-grid">
+          {% if events %}
+            {% for event in events %}
+              <article class="event-card {{ event.theme }}">
+                <div class="event-cover">
+                  <span class="event-pill">{{ event.event_tag }}</span>
+                </div>
+                <div class="event-top">
+                  <h3>{{ event.title }}</h3>
+                  <span class="status {% if event.closed or event.spots_left == 0 %}status-closed{% else %}status-open{% endif %}">{{ event.status_text }}</span>
+                </div>
+                <p class="event-date">{% if lang == 'kk' %}Күні:{% elif lang == 'en' %}Date:{% else %}Дата:{% endif %} {{ event.event_datetime.replace('T', ' ') }}</p>
+                <p class="event-meta">{% if lang == 'kk' %}Орын:{% elif lang == 'en' %}Location:{% else %}Локация:{% endif %} {{ event.location }} • {% if lang == 'kk' %}Бағасы{% elif lang == 'en' %}Price{% else %}Стоимость{% endif %}: {{ event.price }} KZT</p>
+                <p class="event-desc">{{ event.description }}</p>
+                <p class="event-count">{% if lang == 'kk' %}Қатысушылар:{% elif lang == 'en' %}Participants:{% else %}Участников:{% endif %} {{ event.registrations_count }} / {{ event.capacity }} • {% if lang == 'kk' %}Қалған орын:{% elif lang == 'en' %}Spots left:{% else %}Осталось мест:{% endif %} {{ event.spots_left }}</p>
+                <div class="attendees-preview" aria-label="attendees preview">
+                  <img src="https://i.pravatar.cc/64?img={{ (event.id % 60) + 1 }}" alt="attendee" loading="lazy" />
+                  <img src="https://i.pravatar.cc/64?img={{ ((event.id + 7) % 60) + 1 }}" alt="attendee" loading="lazy" />
+                  <img src="https://i.pravatar.cc/64?img={{ ((event.id + 14) % 60) + 1 }}" alt="attendee" loading="lazy" />
+                  <span class="attendee-more">+{{ event.registrations_count if event.registrations_count > 0 else 3 }}</span>
+                </div>
+                {% if not event.closed and event.spots_left > 0 %}
+                  <form method="post" action="{{ url_for('register', event_id=event.id, lang=lang) }}" class="reg-form">
+                    <input type="text" name="name" placeholder="{% if lang == 'kk' %}Аты{% elif lang == 'en' %}Name{% else %}Имя{% endif %}" minlength="2" required />
+                    <input type="tel" name="phone" placeholder="{% if lang == 'kk' %}Телефон{% elif lang == 'en' %}Phone{% else %}Телефон{% endif %}" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <button type="submit" class="btn btn-primary">{% if lang == 'kk' %}Тіркелу{% elif lang == 'en' %}Register{% else %}Зарегистрироваться{% endif %}</button>
+                  </form>
+                {% else %}
+                  <div class="closed-note">{% if lang == 'kk' %}Бұл іс-шараға тіркелу қолжетімсіз.{% elif lang == 'en' %}Registration is unavailable for this event.{% else %}Регистрация недоступна для этого мероприятия.{% endif %}</div>
+                {% endif %}
+              </article>
+            {% endfor %}
+          {% else %}
+            <p class="empty">{% if lang == 'kk' %}Әзірше іс-шара жоқ. Төменде біріншісін құрыңыз.{% elif lang == 'en' %}No events yet. Create your first event below.{% else %}Пока нет мероприятий. Создайте первое событие ниже.{% endif %}</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="section section-alt reveal" id="pricing">
+        <div class="container">
+          <div class="section-head">
+            <h2>{% if lang == 'kk' %}Тарифтер мен мүмкіндіктер{% elif lang == 'en' %}Pricing & Features{% else %}Тарифы и возможности{% endif %}</h2>
+            <p>{% if lang == 'kk' %}Жобаңызға сәйкес келетін жоспарды таңдаңыз.{% elif lang == 'en' %}Choose the plan that fits your project.{% else %}Выберите подходящий формат для вашего проекта.{% endif %}</p>
+          </div>
+          <div class="pricing-grid">
+            <article class="price-card">
+              <h3>Start</h3>
+              <p class="price">0 KZT</p>
+              <ul>
+                <li>{% if lang == 'kk' %}3 іс-шараға дейін{% elif lang == 'en' %}Up to 3 events{% else %}До 3 мероприятий{% endif %}</li>
+                <li>{% if lang == 'kk' %}100 тіркеуге дейін{% elif lang == 'en' %}Up to 100 registrations{% else %}До 100 регистраций{% endif %}</li>
+                <li>{% if lang == 'kk' %}Базалық аналитика{% elif lang == 'en' %}Basic analytics{% else %}Базовая аналитика{% endif %}</li>
+              </ul>
+            </article>
+            <article class="price-card featured">
+              <h3>Pro</h3>
+              <p class="price">29 000 KZT</p>
+              <ul>
+                <li>{% if lang == 'kk' %}Шексіз іс-шара{% elif lang == 'en' %}Unlimited events{% else %}Безлимит событий{% endif %}</li>
+                <li>{% if lang == 'kk' %}Қатысушыларға хабарламалар{% elif lang == 'en' %}Participant notifications{% else %}Уведомления для участников{% endif %}</li>
+                <li>{% if lang == 'kk' %}Кеңейтілген статистика{% elif lang == 'en' %}Advanced analytics{% else %}Расширенная статистика{% endif %}</li>
+              </ul>
+            </article>
+            <article class="price-card">
+              <h3>Enterprise</h3>
+              <p class="price">{% if lang == 'kk' %}Сұраныс бойынша{% elif lang == 'en' %}On request{% else %}По запросу{% endif %}</p>
+              <ul>
+                <li>{% if lang == 'kk' %}Жеке менеджер{% elif lang == 'en' %}Dedicated manager{% else %}Персональный менеджер{% endif %}</li>
+                <li>{% if lang == 'kk' %}Жеке интеграциялар{% elif lang == 'en' %}Custom integrations{% else %}Индивидуальные интеграции{% endif %}</li>
+                <li>{% if lang == 'kk' %}24/7 қолдау{% elif lang == 'en' %}24/7 support{% else %}SLA и техподдержка 24/7{% endif %}</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container reveal" id="services">
+        <div class="section-head">
+          <h2>{% if lang == 'kk' %}Клиенттік сервистер{% elif lang == 'en' %}Client Services{% else %}Сервисы для клиентов{% endif %}</h2>
+          <p>{% if lang == 'kk' %}Ұйымдастырушылар мен қатысушыларға арналған қосымша мүмкіндіктер.{% elif lang == 'en' %}Extra tools for organizers and participants.{% else %}Дополнительные функции для организаторов и участников.{% endif %}</p>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <h3>{% if lang == 'kk' %}CRM режимі{% elif lang == 'en' %}CRM Mode{% else %}CRM-режим{% endif %}</h3>
+            <p>{% if lang == 'kk' %}Қатысушылар, мәртебелер және тіркелу көздері бойынша толық бақылау.{% elif lang == 'en' %}Full control over participants, statuses and registration sources.{% else %}Просмотр участников, статусов и источников регистрации.{% endif %}</p>
+            <button class="btn btn-outline service-btn" type="button" data-service="crm">{% if lang == 'kk' %}Толығырақ{% elif lang == 'en' %}Learn more{% else %}Подробнее{% endif %}</button>
+          </article>
+          <article class="service-card">
+            <h3>{% if lang == 'kk' %}Жылдам Check-in{% elif lang == 'en' %}Fast Check-in{% else %}Быстрый Check-in{% endif %}</h3>
+            <p>{% if lang == 'kk' %}Қонақтарды кіреберісте жылдам тексеру және ағынды басқару.{% elif lang == 'en' %}Quick guest validation at the entrance with flow control.{% else %}Ускоренная проверка гостей на входе и контроль потока.{% endif %}</p>
+            <button class="btn btn-outline service-btn" type="button" data-service="checkin">{% if lang == 'kk' %}Толығырақ{% elif lang == 'en' %}Learn more{% else %}Подробнее{% endif %}</button>
+          </article>
+          <article class="service-card">
+            <h3>{% if lang == 'kk' %}Авто-ескертулер{% elif lang == 'en' %}Auto Reminders{% else %}Авто-напоминания{% endif %}</h3>
+            <p>{% if lang == 'kk' %}Іс-шараға дейін WhatsApp және email арқылы автоматты еске салу.{% elif lang == 'en' %}Automated WhatsApp/email reminders before event start.{% else %}Сервис отправки напоминаний перед стартом мероприятия.{% endif %}</p>
+            <button class="btn btn-outline service-btn" type="button" data-service="reminders">{% if lang == 'kk' %}Толығырақ{% elif lang == 'en' %}Learn more{% else %}Подробнее{% endif %}</button>
+          </article>
+          <article class="service-card">
+            <h3>{% if lang == 'kk' %}Талдау{% elif lang == 'en' %}Analytics{% else %}Аналитика{% endif %}</h3>
+            <p>{% if lang == 'kk' %}Тіркелу конверсиясы мен қатысушы белсенділігі бойынша есептер.{% elif lang == 'en' %}Reports for registration conversion and attendee activity.{% else %}Воронка регистраций, конверсия и активность по датам.{% endif %}</p>
+            <button class="btn btn-outline service-btn" type="button" data-service="analytics">{% if lang == 'kk' %}Толығырақ{% elif lang == 'en' %}Learn more{% else %}Подробнее{% endif %}</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="create">
+        <div class="container two-col reveal">
+          <div>
+            <h2>Создать мероприятие</h2>
+            <p>{% if lang == 'kk' %}Валидациясы бар форма: күн, орын, баға және орын лимиті.{% elif lang == 'en' %}Validated form: date, location, price and capacity.{% else %}Форма создания с валидацией: дата, локация, цена и лимит мест.{% endif %}</p>
+          </div>
+          <form class="create-form card" method="post" action="{{ url_for('create_event', lang=lang) }}">
+            <label for="title">{% if lang == 'kk' %}Атауы{% elif lang == 'en' %}Title{% else %}Название{% endif %}</label>
+            <input id="title" name="title" type="text" minlength="3" maxlength="120" required />
+
+            <label for="event_datetime">{% if lang == 'kk' %}Күні мен уақыты (болашақ){% elif lang == 'en' %}Date & time (future){% else %}Дата и время (будущее){% endif %}</label>
+            <input id="event_datetime" name="event_datetime" type="datetime-local" required />
+
+            <label for="location">{% if lang == 'kk' %}Орын{% elif lang == 'en' %}Location{% else %}Локация{% endif %}</label>
+            <input id="location" name="location" type="text" minlength="3" maxlength="120" placeholder="Алматы, Smart Point" required />
+
+            <label for="price">{% if lang == 'kk' %}Бағасы (KZT){% elif lang == 'en' %}Price (KZT){% else %}Цена (KZT){% endif %}</label>
+            <input id="price" name="price" type="number" min="0" step="500" value="0" required />
+
+            <label for="capacity">{% if lang == 'kk' %}Орын лимиті{% elif lang == 'en' %}Capacity{% else %}Лимит мест{% endif %}</label>
+            <input id="capacity" name="capacity" type="number" min="1" max="5000" value="50" required />
+
+            <label for="theme">{% if lang == 'kk' %}Дизайн таңдау{% elif lang == 'en' %}Choose Design{% else %}Выбрать дизайн{% endif %}</label>
+            <select id="theme" name="theme" required>
+              <option value="theme-tech">{% if lang == 'kk' %}Технологиялық{% elif lang == 'en' %}Tech{% else %}Технологичный{% endif %}</option>
+              <option value="theme-business">{% if lang == 'kk' %}Бизнес{% elif lang == 'en' %}Business{% else %}Бизнес{% endif %}</option>
+              <option value="theme-community">{% if lang == 'kk' %}Қауымдастық{% elif lang == 'en' %}Community{% else %}Сообщество{% endif %}</option>
+              <option value="theme-creative">{% if lang == 'kk' %}Шығармашылық{% elif lang == 'en' %}Creative{% else %}Креативный{% endif %}</option>
+              <option value="theme-premium">{% if lang == 'kk' %}Премиум{% elif lang == 'en' %}Premium{% else %}Премиум{% endif %}</option>
+            </select>
+
+            <label for="description">{% if lang == 'kk' %}Сипаттама{% elif lang == 'en' %}Description{% else %}Описание{% endif %}</label>
+            <textarea id="description" name="description" rows="4" minlength="10" maxlength="2000" required></textarea>
+
+            <button type="submit" class="btn btn-primary">{% if lang == 'kk' %}Іс-шара құру{% elif lang == 'en' %}Create Event{% else %}Создать мероприятие{% endif %}</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="section container reveal" id="contacts">
+        <div class="contact-banner">
+          <div>
+            <h2>{% if lang == 'kk' %}Бізбен байланыс{% elif lang == 'en' %}Contact Us{% else %}Связаться с нами{% endif %}</h2>
+            <p>{% if lang == 'kk' %}WhatsApp арқылы іске қосу және сүйемелдеу бойынша қолдау.{% elif lang == 'en' %}WhatsApp support for launch and event operations.{% else %}WhatsApp поддержка по запуску и сопровождению мероприятий.{% endif %}</p>
+          </div>
+          <a href="https://wa.me/87754631285" target="_blank" rel="noopener noreferrer" class="btn btn-light">WhatsApp</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>
+          <strong>Amirkhan</strong>
+          <p>{% if lang == 'kk' %}Іс-шараларды басқару және қатысушыларды тіркеу жүйесі.{% elif lang == 'en' %}Event management and participant registration system.{% else %}Система управления мероприятиями и регистрацией участников.{% endif %}</p>
+        </div>
+        <div>
+          <p>Телефон/WhatsApp: <a href="https://wa.me/87754631285">+7 775 463 1285</a></p>
+          <p>Email: amirkhan.events@local</p>
+        </div>
+      </div>
+    </footer>
+
+    <a class="whatsapp-fab" href="https://wa.me/87754631285" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">WA</a>
+    <div id="service-modal" class="service-modal hidden" aria-hidden="true">
+      <div class="service-modal-card">
+        <button class="service-modal-close" id="service-modal-close" type="button">&times;</button>
+        <h3 id="service-modal-title">Service</h3>
+        <p id="service-modal-text"></p>
+        <a class="btn btn-primary" href="#contacts">{% if lang == 'kk' %}Байланысу{% elif lang == 'en' %}Contact us{% else %}Связаться{% endif %}</a>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
